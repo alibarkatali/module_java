@@ -11,17 +11,21 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import org.json.JSONObject;
+//import org.json.JSONObject;
 
 /**
  *
  * @author matthieu
  */
 public class Communication {
-
-    public Communication (){
-        
-    }
+    
+    /**
+     * Permet de faire un GET
+     * @param urlToRead
+     *          adresse URL ou on effectue un GET
+     * @return String contenant le json a parser
+     * @throws Exception 
+     */
     
     public static String getHtml (String urlToRead) throws Exception{
         StringBuilder result = new StringBuilder();
@@ -39,6 +43,13 @@ public class Communication {
         return result.toString();
     }
     
+    /**
+     * Permet de faire un POST
+     * @param urlToPost
+     *          Adresse URL ou l'on effectue le POST
+     * @param data
+     * @throws Exception 
+     */
     public static void postHtml (String urlToPost,String data) throws Exception{
         
         // Création de l'objet connexion

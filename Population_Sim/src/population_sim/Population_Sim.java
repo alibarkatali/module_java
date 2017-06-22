@@ -20,7 +20,11 @@ public class Population_Sim {
     
     public static void main(String[] args) throws Exception {
         // TODO code application logic here
-        String urlToRead = "http://www.thomas-bayer.com/sqlrest/";
+        
+        /**
+         * Test pour la communication Get et Post
+         */
+        String urlToRead = "http://fast-wave-77815.herokuapp.com/metrology";
         String urlToPost = "http://httpbin.org/post";
         String dataPost = "Test";
         

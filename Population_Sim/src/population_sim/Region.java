@@ -11,4 +11,20 @@ package population_sim;
  */
 public class Region {
     
+    /**
+     * Constructeur par defaut de la classe Region
+     */
+    /*
+    public Region(){
+        
+    }
+    
+    public void addItem(Item item){
+        
+    }
+    
+    public void addPopulation (Population population){
+        
+    }
+    */
 }
