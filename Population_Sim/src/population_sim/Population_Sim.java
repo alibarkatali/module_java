@@ -7,6 +7,8 @@ package population_sim;
 
 import static population_sim.Communication.getHtml;
 import static population_sim.Communication.postHtml;
+import static population_sim.Json.getMetrologyParser;
+import static population_sim.Json.jsonPostSales;
 
 /**
  *
@@ -24,13 +26,20 @@ public class Population_Sim {
         /**
          * Test pour la communication Get et Post
          */
-        String urlToRead = "http://fast-wave-77815.herokuapp.com/metrology";
-        String urlToPost = "http://httpbin.org/post";
-        String dataPost = "Test";
+        String urlToReadMetrology = "http://fast-wave-77815.herokuapp.com/metrology";
+        String urlToReadMap = "http://fast-wave-77815.herokuapp.com/map";
+        String urlToPostSales = "http://fast-wave-77815.herokuapp.com/sales";
+        String urlToPostTest = "http://httpbin.org/post";
         
-        System.out.println(getHtml(urlToRead));
-        System.out.println("\n");
-        postHtml(urlToPost,dataPost);
+        String result = getHtml(urlToReadMetrology);
+        getMetrologyParser(result);
+        //System.out.println(result);
+        
+        String result2 = getHtml(urlToReadMap);
+        //getMapParser(result2);
+        System.out.println(result2);
+ 
+        postHtml(urlToPostTest,jsonPostSales("matthieu","the",10));
     }
     
 }

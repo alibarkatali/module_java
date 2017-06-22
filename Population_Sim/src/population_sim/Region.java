@@ -11,6 +11,9 @@ package population_sim;
  */
 public class Region {
     
+    private Coordinate center;
+    private Coordinate span;
+    
     /**
      * Constructeur par defaut de la classe Region
      */
