@@ -5,6 +5,8 @@
  */
 package population_sim;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author matthieu
@@ -15,40 +17,28 @@ public class Player {
      * nom du joueur
      */
     private String name;
-    /**
-     * localisation du joueur (== a celui de son stand)
-     */
-    private Coordinate location;
-    
-    /*
     private float cash;
     private float profit;
-    */
-    
+    private int sales;
+    private ArrayList <Drink> drinkOffered = new ArrayList();
+    private ArrayList <Drink> drink = new ArrayList();
+    private ArrayList <Item> listItem = new ArrayList();
     /**
      * Constructeur par defaut de la classe Player
      * @param name
      *          Nom du joueur
-     * @param localion 
+     * @param location 
      *          Position du joueur
      */
-    public Player (String name, Coordinate localion){
+    public Player (String name,float cash,float profit,int sales,Drink drinkOffered){
         this.name = name;
-        this.location = location;
+        this.cash = cash;
+        this.profit = profit;
+        this.sales = sales;
     }
     
-    /**
-     * Construceut de la classe Player (avec longitude et latitude)
-     * @param name
-     *          Nom du joueur
-     * @param longitude
-     *          Position du joueur en x
-     * @param latitude 
-     *          Position du joueur en y 
-     */
-    public Player (String name, float longitude, float latitude){
-        this.name = name;
-        this.location = new Coordinate(longitude,latitude);
+    public Player (){
+        
     }
 
     /**
@@ -63,21 +53,73 @@ public class Player {
      */
     public void setName(String name) {
         this.name = name;
+    }   
+
+    /**
+     * @return the cash
+     */
+    public float getCash() {
+        return cash;
     }
 
     /**
-     * @return the location
+     * @param cash the cash to set
      */
-    public Coordinate getLocation() {
-        return location;
+    public void setCash(float cash) {
+        this.cash = cash;
     }
 
     /**
-     * @param location the location to set
+     * @return the profit
      */
-    public void setLocation(Coordinate location) {
-        this.location = location;
+    public float getProfit() {
+        return profit;
+    }
+
+    /**
+     * @param profit the profit to set
+     */
+    public void setProfit(float profit) {
+        this.profit = profit;
+    }
+
+    /**
+     * @return the sales
+     */
+    public int getSales() {
+        return sales;
+    }
+
+    /**
+     * @param sales the sales to set
+     */
+    public void setSales(int sales) {
+        this.sales = sales;
+    }
+
+    /**
+     * @return the listItem
+     */
+    public ArrayList <Item> getListItem() {
+        return listItem;
+    }
+
+    /**
+     * @param listItem the listItem to set
+     */
+    public void setListItem(ArrayList <Item> listItem) {
+        this.listItem = listItem;
+    }
+
+    /**
+     * @param drinkOffered the drinkOffered to set
+     */
+    public void setDrinkOffered(ArrayList <Drink> drinkOffered) {
+        this.drinkOffered = drinkOffered;
     }
     
+    public ArrayList <Drink> getDrinkOffered (){
+        return drinkOffered;
+    }
     
 }

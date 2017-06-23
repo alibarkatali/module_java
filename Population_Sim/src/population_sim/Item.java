@@ -25,7 +25,6 @@ public class Item {
      * rayon d'influence de l'item
      */
     private float influence;
-    
     /**
      * Constructeur par defaut de la classe item
      * @param kind
