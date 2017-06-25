@@ -121,5 +121,19 @@ public class Player {
     public ArrayList <Drink> getDrinkOffered (){
         return drinkOffered;
     }
+
+    /**
+     * @return the drink
+     */
+    public ArrayList <Drink> getDrink() {
+        return drink;
+    }
+
+    /**
+     * @param drink the drink to set
+     */
+    public void setDrink(ArrayList <Drink> drink) {
+        this.drink = drink;
+    }
     
 }

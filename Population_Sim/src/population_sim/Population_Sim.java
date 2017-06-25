@@ -9,6 +9,7 @@ import static population_sim.Communication.getHtml;
 import static population_sim.Communication.postHtml;
 import static population_sim.Game.getMetrologyParser;
 import static population_sim.Game.jsonPostSales;
+import static population_sim.Game.getMapParser;
 
 /**
  *
@@ -23,6 +24,17 @@ public class Population_Sim {
     public static void main(String[] args) throws Exception {
         // TODO code application logic here
         Region region = new Region();
+        
+        /* Creation de la population*/
+        
+        /*for(int i = 0 ; i < 1000 ; i++){
+            float x = (float) (5.0 + (Math.random() * (10.0 - 5.0))); 
+            float y = (float) (5.0 + (Math.random() * (10.0 - 5.0)));
+            Coordinate location = new Coordinate(x,y);
+            Population bot = new Population(location);
+            region.getListPop().add(bot);
+        }*/
+        
         /**
          * Test pour la communication Get et Post
          */
@@ -31,19 +43,15 @@ public class Population_Sim {
         String urlToPostSales = "http://fast-wave-77815.herokuapp.com/sales";
         String urlToPostTest = "http://httpbin.org/post";
  
-        postHtml(urlToPostTest,jsonPostSales("matthieu","the",10));
+        //postHtml(urlToPostTest,jsonPostSales("matthieu","the",10));
         
         String result = getHtml(urlToReadMetrology);
         getMetrologyParser(result);
         //System.out.println(result);
         
         String result2 = getHtml(urlToReadMap);
-        getMapParser(result2);
-        System.out.println(result2);
-    }
-
-    private static void getMapParser(String result2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getMapParser(result2,region);
+        //System.out.println(result2);
     }
     
 }

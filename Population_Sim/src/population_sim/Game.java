@@ -12,6 +12,9 @@ import org.json.*;
  */
 public class Game {
     
+    private String metrology;
+    //ajouter l'heure
+    
     /**
      * Parse le string serialisé en json pour recuperer plusieurs informations.
      * @param json_serial
@@ -24,13 +27,13 @@ public class Game {
         ArrayList name_player = new ArrayList();
         try{
             JSONObject obj = new JSONObject(json_serial);
-            
+            System.out.println(obj);
             //Recuperation de chaque "type" principaux (region,ranking,itemsbyPlayers,playerInfo,drinksByPlayer)
-            JSONObject json_region = obj.getJSONObject("region");
-            JSONArray json_ranking = obj.getJSONArray("ranking");
-            JSONObject json_itemsByPlayer = obj.getJSONObject("itemsByPlayer");
-            JSONObject json_playerInfo = obj.getJSONObject("playerInfo");
-            JSONObject json_drinksByPlayer = obj.getJSONObject("drinksByPlayer");
+            JSONObject json_region = obj.getJSONObject("map").getJSONObject("region");
+            JSONArray json_ranking = obj.getJSONObject("map").getJSONArray("ranking");
+            JSONObject json_itemsByPlayer = obj.getJSONObject("map").getJSONObject("itemsByPlayer");
+            JSONObject json_playerInfo = obj.getJSONObject("map").getJSONObject("playerInfo");
+            JSONObject json_drinksByPlayer = obj.getJSONObject("map").getJSONObject("drinksByPlayer");
             
             for(int i = 0 ; i < json_ranking.length() ; i++){
                 System.out.println(json_ranking.getString(i));
@@ -41,14 +44,14 @@ public class Game {
                 
                 //playerInfo
                 String name = name_player.get(i).toString();
-                float cash = (float) json_playerInfo.getJSONObject(name).get("cash");
-                float profit =(float) json_playerInfo.getJSONObject(name).get("profit") ;
-                int sales = (int) json_playerInfo.getJSONObject(name).get("sales");
+                float cash =(float) json_playerInfo.getJSONObject(name).getDouble("cash");
+                float profit =(float) json_playerInfo.getJSONObject(name).getDouble("profit") ;
+                int sales = (int) json_playerInfo.getJSONObject(name).getInt("sales");
                 
                 JSONArray drinksOfferedJArray = json_playerInfo.getJSONObject(name).getJSONArray("drinksOffered");
                 for(int j = 0 ; j < drinksOfferedJArray.length() ; j++){
                     String name_drink = drinksOfferedJArray.getJSONObject(j).getString("name");
-                    float price = (float) drinksOfferedJArray.getJSONObject(j).get("price");
+                    float price = (float) drinksOfferedJArray.getJSONObject(j).getDouble("price");
                     Boolean hasAlcohol = drinksOfferedJArray.getJSONObject(j).getBoolean("hasAlcohol");
                     Boolean isCold = drinksOfferedJArray.getJSONObject(j).getBoolean("isCold");
                     Drink drinkOffered = new Drink(name_drink,price,hasAlcohol,isCold);
@@ -70,17 +73,34 @@ public class Game {
                     }else{
                         kind = Kind_Items.AD;
                     }
-                   float influence =(float) itemsByPlayerArray.getJSONObject(j).get("influence");
-                   float latitude = (float) itemsByPlayerArray.getJSONObject(j).getJSONObject("location").get("latitude");
-                   float longitude = (float) itemsByPlayerArray.getJSONObject(j).getJSONObject("location").get("longitude");
+                   float influence =(float) itemsByPlayerArray.getJSONObject(j).getDouble("influence");
+                   float latitude = (float) itemsByPlayerArray.getJSONObject(j).getJSONObject("location").getDouble("latitude");
+                   float longitude = (float) itemsByPlayerArray.getJSONObject(j).getJSONObject("location").getDouble("longitude");
                    Coordinate location = new Coordinate(longitude,latitude);
                    Item newItem = new Item(kind, name, location, influence);
                    region.getListPlayer().get(i).getListItem().add(newItem);
                 }
                 
                 //drinksByPlayer
-                
+                JSONArray drinksByPlayerArray = json_drinksByPlayer.getJSONArray(name);
+                for (int j = 0 ; j < drinksByPlayerArray.length() ; j++){
+                    String nameDrink = drinksByPlayerArray.getJSONObject(j).getString("name");
+                    float price = (float) drinksByPlayerArray.getJSONObject(j).getDouble("price");
+                    Boolean hasAlcohol = drinksByPlayerArray.getJSONObject(j).getBoolean("hasAlcohol");
+                    Boolean isCold = drinksByPlayerArray.getJSONObject(j).getBoolean("isCold");
+                    Drink drinksByPlayer = new Drink(name,price,hasAlcohol,isCold);
+                    region.getListPlayer().get(i).getDrink().add(drinksByPlayer);
+                }
             }
+            
+            //region
+            float latitude = (float) json_region.getJSONObject("center").getDouble("latitude");
+            float longitude = (float) json_region.getJSONObject("center").getDouble("longitude");
+            float latitudeSpan = (float) json_region.getJSONObject("span").getDouble("latitudeSpan");
+            float longitudeSpan = (float) json_region.getJSONObject("span").getDouble("longitudeSpan");
+            
+            region.setCenter(new Coordinate(longitude,longitude));
+            region.setSpan(new Coordinate(longitudeSpan,latitudeSpan));
             
             return null;
             
