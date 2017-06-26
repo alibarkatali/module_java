@@ -11,10 +11,6 @@ import org.json.*;
  * @author matthieu
  */
 public class Game {
-    
-    private String metrology;
-    //ajouter l'heure
-    
     /**
      * Parse le string serialisé en json pour recuperer plusieurs informations.
      * @param json_serial
@@ -23,7 +19,7 @@ public class Game {
      * 
      * @return 
      */
-    public static String getMapParser (String json_serial, Region region){
+    public static void getMapParser (String json_serial, Region region){
         ArrayList name_player = new ArrayList();
         try{
             JSONObject obj = new JSONObject(json_serial);
@@ -52,8 +48,8 @@ public class Game {
                 for(int j = 0 ; j < drinksOfferedJArray.length() ; j++){
                     String name_drink = drinksOfferedJArray.getJSONObject(j).getString("name");
                     float price = (float) drinksOfferedJArray.getJSONObject(j).getDouble("price");
-                    Boolean hasAlcohol = drinksOfferedJArray.getJSONObject(j).getBoolean("hasAlcohol");
-                    Boolean isCold = drinksOfferedJArray.getJSONObject(j).getBoolean("isCold");
+                    boolean hasAlcohol = drinksOfferedJArray.getJSONObject(j).getBoolean("hasAlcohol");
+                    boolean isCold = drinksOfferedJArray.getJSONObject(j).getBoolean("isCold");
                     Drink drinkOffered = new Drink(name_drink,price,hasAlcohol,isCold);
                     player.getDrinkOffered().add(drinkOffered);
                 }
@@ -68,7 +64,7 @@ public class Game {
                 for (int j = 0 ; j < itemsByPlayerArray.length() ; j++){
                     String kind_Item = itemsByPlayerArray.getJSONObject(j).getString("kind");
                     Kind_Items kind;
-                    if(kind_Item.equals("stand")){
+                    if(kind_Item.equals("STAND") || kind_Item.equals("stand")){
                         kind = Kind_Items.STAND;
                     }else{
                         kind = Kind_Items.AD;
@@ -86,9 +82,9 @@ public class Game {
                 for (int j = 0 ; j < drinksByPlayerArray.length() ; j++){
                     String nameDrink = drinksByPlayerArray.getJSONObject(j).getString("name");
                     float price = (float) drinksByPlayerArray.getJSONObject(j).getDouble("price");
-                    Boolean hasAlcohol = drinksByPlayerArray.getJSONObject(j).getBoolean("hasAlcohol");
-                    Boolean isCold = drinksByPlayerArray.getJSONObject(j).getBoolean("isCold");
-                    Drink drinksByPlayer = new Drink(name,price,hasAlcohol,isCold);
+                    boolean hasAlcohol = drinksByPlayerArray.getJSONObject(j).getBoolean("hasAlcohol");
+                    boolean isCold = drinksByPlayerArray.getJSONObject(j).getBoolean("isCold");
+                    Drink drinksByPlayer = new Drink(nameDrink,price,hasAlcohol,isCold);
                     region.getListPlayer().get(i).getDrink().add(drinksByPlayer);
                 }
             }
@@ -101,14 +97,10 @@ public class Game {
             
             region.setCenter(new Coordinate(longitude,longitude));
             region.setSpan(new Coordinate(longitudeSpan,latitudeSpan));
-            
-            return null;
-            
+                    
         }   catch( Exception ex){
             ex.printStackTrace();
         }     
-        
-        return null;
     }
     
     /**
@@ -117,13 +109,12 @@ public class Game {
      * @return metrology
      *          Le string correspondant a la meteo du jour          
      */
-    public static String getMetrologyParser (String json_serial){
+    public static void getMetrologyParser (String json_serial, Region region){
         JSONObject json = new JSONObject (json_serial);
         String metrology = json.getJSONObject("weather").getString("weather");
         
         System.out.println("metrology : " + metrology);
-        
-        return metrology;
+        region.setMetrology(metrology);
     }
     
     /**
@@ -137,8 +128,13 @@ public class Game {
      * @return 
      *          retourne le string representant le json
      */
-    public static String jsonPostSales (String player, String itemName, int itemQuantity){
-        String jsonToSend = "{\"sales\":{\"player\":\"" + player + "\",\"item\":\""+ itemName + "\",\"quantity\":" + itemQuantity +"}}";
+    public static JSONObject jsonPostSales (String player, String itemName, int itemQuantity){
+        JSONObject jsonToSend = new JSONObject();// "{\"sales\":{\"player\":\"" + player + "\",\"item\":\""+ itemName + "\",\"quantity\":" + itemQuantity +"}}";
+        JSONObject sales = new JSONObject();
+        sales.put("name", player);
+        sales.put("item", itemName);
+        sales.put("quantity", itemQuantity);
+        jsonToSend.put("sales", sales);
         return jsonToSend;
     }
     

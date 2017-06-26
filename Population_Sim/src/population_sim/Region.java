@@ -17,6 +17,8 @@ public class Region {
     private Coordinate span;
     private ArrayList <Player> listPlayer = new ArrayList();
     private ArrayList <Population> listPop = new ArrayList();
+    private String metrology;
+    
     /**
      * Constructeur par defaut de la classe Region
      * @param center
@@ -73,5 +75,19 @@ public class Region {
      */
     public ArrayList <Population> getListPop() {
         return listPop;
+    }
+
+    /**
+     * @return the metrology
+     */
+    public String getMetrology() {
+        return metrology;
+    }
+
+    /**
+     * @param metrology the metrology to set
+     */
+    public void setMetrology(String metrology) {
+        this.metrology = metrology;
     }
 }

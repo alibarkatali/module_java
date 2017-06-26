@@ -24,34 +24,26 @@ public class Population_Sim {
     public static void main(String[] args) throws Exception {
         // TODO code application logic here
         Region region = new Region();
+        String urlToReadMetrology = "http://fast-wave-77815.herokuapp.com/metrology";
+        String urlToReadMap = "http://fast-wave-77815.herokuapp.com/map"; 
+        String urlToPostSales = "http://fast-wave-77815.herokuapp.com/sales";
         
-        /* Creation de la population*/
         
-        /*for(int i = 0 ; i < 1000 ; i++){
-            float x = (float) (5.0 + (Math.random() * (10.0 - 5.0))); 
-            float y = (float) (5.0 + (Math.random() * (10.0 - 5.0)));
-            Coordinate location = new Coordinate(x,y);
-            Population bot = new Population(location);
-            region.getListPop().add(bot);
-        }*/
         
         /**
          * Test pour la communication Get et Post
          */
-        String urlToReadMetrology = "http://fast-wave-77815.herokuapp.com/metrology";
-        String urlToReadMap = "http://fast-wave-77815.herokuapp.com/map";
-        String urlToPostSales = "http://fast-wave-77815.herokuapp.com/sales";
-        String urlToPostTest = "http://httpbin.org/post";
- 
-        //postHtml(urlToPostTest,jsonPostSales("matthieu","the",10));
         
         String result = getHtml(urlToReadMetrology);
-        getMetrologyParser(result);
-        //System.out.println(result);
+        getMetrologyParser(result,region);
         
         String result2 = getHtml(urlToReadMap);
         getMapParser(result2,region);
-        //System.out.println(result2);
+        
+        /*postHtml(urlToPostSales,jsonPostSales("mat","the",10));*/
+        System.out.println(region.getListPlayer().get(0).getListItem().get(0).getKind());
+        Simulation simu = new Simulation();
+        simu.createAndPlaceBot(100, region);
+        simu.simulate_game(region);
     }
-    
 }
