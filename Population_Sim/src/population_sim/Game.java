@@ -19,11 +19,12 @@ public class Game {
      * 
      * @return 
      */
-    public static void getMapParser (String json_serial, Region region){
+    public static void getMapParser (String json_serial){
         ArrayList name_player = new ArrayList();
+        InterfaceG.region.getListPlayer().clear();
+        InterfaceG.region.getListPop().clear();
         try{
             JSONObject obj = new JSONObject(json_serial);
-            System.out.println(obj);
             //Recuperation de chaque "type" principaux (region,ranking,itemsbyPlayers,playerInfo,drinksByPlayer)
             JSONObject json_region = obj.getJSONObject("map").getJSONObject("region");
             JSONArray json_ranking = obj.getJSONObject("map").getJSONArray("ranking");
@@ -32,11 +33,10 @@ public class Game {
             JSONObject json_drinksByPlayer = obj.getJSONObject("map").getJSONObject("drinksByPlayer");
             
             for(int i = 0 ; i < json_ranking.length() ; i++){
-                System.out.println(json_ranking.getString(i));
                 name_player.add(json_ranking.getString(i));
                 
                 Player player = new Player();
-                region.getListPlayer().add(player);
+                InterfaceG.region.getListPlayer().add(player);
                 
                 //playerInfo
                 String name = name_player.get(i).toString();
@@ -74,7 +74,7 @@ public class Game {
                    float longitude = (float) itemsByPlayerArray.getJSONObject(j).getJSONObject("location").getDouble("longitude");
                    Coordinate location = new Coordinate(longitude,latitude);
                    Item newItem = new Item(kind, name, location, influence);
-                   region.getListPlayer().get(i).getListItem().add(newItem);
+                   InterfaceG.region.getListPlayer().get(i).getListItem().add(newItem);
                 }
                 
                 //drinksByPlayer
@@ -85,7 +85,7 @@ public class Game {
                     boolean hasAlcohol = drinksByPlayerArray.getJSONObject(j).getBoolean("hasAlcohol");
                     boolean isCold = drinksByPlayerArray.getJSONObject(j).getBoolean("isCold");
                     Drink drinksByPlayer = new Drink(nameDrink,price,hasAlcohol,isCold);
-                    region.getListPlayer().get(i).getDrink().add(drinksByPlayer);
+                    InterfaceG.region.getListPlayer().get(i).getDrink().add(drinksByPlayer);
                 }
             }
             
@@ -95,8 +95,8 @@ public class Game {
             float latitudeSpan = (float) json_region.getJSONObject("span").getDouble("latitudeSpan");
             float longitudeSpan = (float) json_region.getJSONObject("span").getDouble("longitudeSpan");
             
-            region.setCenter(new Coordinate(longitude,longitude));
-            region.setSpan(new Coordinate(longitudeSpan,latitudeSpan));
+            InterfaceG.region.setCenter(new Coordinate(longitude,latitude));
+            InterfaceG.region.setSpan(new Coordinate(longitudeSpan,latitudeSpan));
                     
         }   catch( Exception ex){
             ex.printStackTrace();
@@ -109,34 +109,18 @@ public class Game {
      * @return metrology
      *          Le string correspondant a la meteo du jour          
      */
-    public static void getMetrologyParser (String json_serial, Region region){
-        JSONObject json = new JSONObject (json_serial);
-        String metrology = json.getJSONObject("weather").getString("weather");
-        
-        System.out.println("metrology : " + metrology);
-        region.setMetrology(metrology);
-    }
-    
-    /**
-     * Serialise un string au format json pour la requete POST sales
-     * @param player
-     *          pseudonyme du joueur
-     * @param itemName
-     *          nom de la boisson
-     * @param itemQuantity
-     *          nombre de boisson vendu
-     * @return 
-     *          retourne le string representant le json
-     */
-    public static JSONObject jsonPostSales (String player, String itemName, int itemQuantity){
-        JSONObject jsonToSend = new JSONObject();// "{\"sales\":{\"player\":\"" + player + "\",\"item\":\""+ itemName + "\",\"quantity\":" + itemQuantity +"}}";
-        JSONObject sales = new JSONObject();
-        sales.put("name", player);
-        sales.put("item", itemName);
-        sales.put("quantity", itemQuantity);
-        jsonToSend.put("sales", sales);
-        return jsonToSend;
-    }
-    
+    public static void getMetrologyParser (String json_serial){
+        JSONObject obj = new JSONObject (json_serial);
+        JSONArray json_weather_array = obj.getJSONArray("weather");
+        int json_timestamp = obj.getInt("timestamp");
+        System.out.println("timestamps : " + json_timestamp);
+        InterfaceG.region.setTimestamp(json_timestamp);
+        for (int i = 0 ; i < json_weather_array.length() ; i++){
+            if (json_weather_array.getJSONObject(i).getInt("dfn") == 0){
+                InterfaceG.region.setMetrology(json_weather_array.getJSONObject(i).get("weather").toString());
+            }
+        }        
+        //System.out.println("metrology : " + region.getMetrology());
+    }    
 }
 

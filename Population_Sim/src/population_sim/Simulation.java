@@ -6,16 +6,17 @@
 package population_sim;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
-/**
- *
+import java.util.Map;
+import org.json.*;
+import static population_sim.Communication.postHtml;
+ /*
  * @author matthieu
  */
 public class Simulation {
-    private Hashtable probMap;
+    private HashMap <String,Double> probMap;
     
     public Simulation(){
-        this.probMap = new Hashtable();
+        this.probMap = new HashMap();
         probMap.put("thunderstorm",0.0);
         probMap.put("rainy",0.15);
         probMap.put("cloudy",0.3);
@@ -23,18 +24,18 @@ public class Simulation {
         probMap.put("heatwave",1.0);
     }
     
-    public void createAndPlaceBot(int nbBot,Region region){
+    public void createAndPlaceBot(int nbBot){
         /* Creation de la population*/
-        region.getListPop().clear();
+        InterfaceG.region.getListPop().clear();
         for(int i = 0 ; i < nbBot ; i++){
-            float x = (float) (5.0 + (Math.random() * (10.0 - 5.0))); // (min + (Math.random() * (10.0 - 5.0)) 
-            float y = (float) (5.0 + (Math.random() * (10.0 - 5.0)));
-            region.getListPop().add(new Population(new Coordinate(x,y)));
+            float x = (float) (0.0 + (Math.random() * (InterfaceG.region.getSpan().getLongitude() - 0.0))); // (min + (Math.random() * (10.0 - 5.0)) 
+            float y = (float) (0.0 + (Math.random() * (InterfaceG.region.getSpan().getLatitude() - 0.0)));
+            InterfaceG.region.getListPop().add(new Population(new Coordinate(x,y)));
         }
-        System.out.println("distance : " + checkDistanceBetweenStandAndBot(region.getListPlayer().get(0).getListItem().get(0),region.getListPop().get(0)));
-        
     }
 
+    
+    
     public float checkDistanceBetweenStandAndBot(Item stand, Population bot){
         float deltaLong =(float) Math.pow((stand.getLocation().getLongitude()+bot.getLocation().getLongitude()),2); //changer par la fonction ²
         float deltaLat = (float) Math.pow((stand.getLocation().getLatitude()+bot.getLocation().getLatitude()),2);
@@ -42,9 +43,10 @@ public class Simulation {
         return distance;
     }
     
-    public void simulate_game(Region region){
-        ArrayList <Player> player = region.getListPlayer();
-        ArrayList <Population> pop = region.getListPop();
+    @SuppressWarnings("empty-statement")
+    public void simulate_game() throws Exception{
+        ArrayList <Player> player = InterfaceG.region.getListPlayer();
+        ArrayList <Population> pop = InterfaceG.region.getListPop();
         HashMap <Player, Integer> dispatchBot = new HashMap();
         
         for(int i = 0 ; i < pop.size() ; i++){
@@ -58,41 +60,80 @@ public class Simulation {
                     bestDistance = distance;
                     saveBestPlayer = player.get(j);
                 }
-                if (dispatchBot.containsKey(saveBestPlayer)){
-                    dispatchBot.replace(saveBestPlayer, dispatchBot.get(saveBestPlayer)+1);
-                }else{
-                    dispatchBot.put(saveBestPlayer, 1);
-                }
+            }
+            if (dispatchBot.containsKey(saveBestPlayer)){
+                dispatchBot.replace(saveBestPlayer, dispatchBot.get(saveBestPlayer)+1);
+            }else{
+                dispatchBot.put(saveBestPlayer, 1);
             }
         }
-        /*float prob = (float) getProbMap().get(region.getMetrology());
+        System.out.println("size dispatchBot : " + dispatchBot.size());
+        System.out.println("---nb bot a chaque stand---");
+        for(Map.Entry<Player,Integer> entry : dispatchBot.entrySet()){
+            Player key = entry.getKey();
+            System.out.println("name : " + key.getName() + " nb bot : " + dispatchBot.get(key));
+        }
+        
+        Double prob = (Double) getProbMap().get(InterfaceG.region.getMetrology());
+        //System.out.println("prob :" + prob );
         HashMap <Player, Integer> venteTheorique = new HashMap();
-        for (int i = 0 ; i < dispatchBot.size() ; i++){
-            int nbBotAtStand = dispatchBot.get(i);
+        for (Map.Entry<Player,Integer> entry : dispatchBot.entrySet()){
+            Player key = entry.getKey();
+            //System.out.println("name player : " + key.getName());
+            //System.out.println("nb de bot au stand : " + dispatchBot.get(key));
+            int nbBotAtStand = dispatchBot.get(key);
             for (int j = 0 ; j < nbBotAtStand ; j++){
                 float achete = (float) Math.random();
                 if(achete < prob){
-                    if(venteTheorique.containsKey(player.get(i))){
-                        venteTheorique.replace(player.get(i), venteTheorique.get(i)+1);
+                    if(venteTheorique.containsKey(key)){
+                        venteTheorique.replace(key, venteTheorique.get(key)+1);
                     }else{
-                        
+                        venteTheorique.put(key,1);
                     }
                 }
             }
-        }*/
+        }
+        System.out.println("---POST---");
+        JSONObject jsonToSend = new JSONObject();
+        ArrayList <JSONObject> arrayJson = new ArrayList();
+        for (int i = 0 ; i < player.size() ; i ++){
+            //System.out.println("name player : " + player.get(i).getName());
+            String namePlayer = player.get(i).getName();
+            String nameItem = "";
+            int quantity = 0;
+            if(!player.get(i).getDrinkOffered().isEmpty()){
+                //System.out.println("rien a vendre");
+                nameItem = player.get(i).getDrinkOffered().get(0).getName();
+            }
+            if(venteTheorique.get(player.get(i)) != null){
+                quantity = venteTheorique.get(player.get(i));
+            }
+            JSONObject sales = new JSONObject();
+            sales.put("name",namePlayer);
+            sales.put("item",nameItem);
+            sales.put("quantity",quantity);
+            arrayJson.add(sales);
+        }
+        JSONArray arraySales = new JSONArray();
+        for(int i = 0 ; i < arrayJson.size() ; i++){
+            arraySales.put(arrayJson.get(i));
+        }
+        JSONObject jsonTosend = new JSONObject();
+        jsonToSend.put("sales",arraySales);
+        postHtml("http://fast-wave-77815.herokuapp.com/sales",jsonToSend);
     }
     
     /**
      * @return the probMap
      */
-    public Hashtable getProbMap() {
+    public HashMap getProbMap() {
         return probMap;
     }
 
     /**
      * @param probMap the probMap to set
      */
-    public void setProbMap(Hashtable probMap) {
+    public void setProbMap(HashMap probMap) {
         this.probMap = probMap;
     }
 }

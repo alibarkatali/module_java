@@ -5,14 +5,16 @@
  */
 package population_sim;
 
+import org.json.*;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import org.json.JSONObject;
-//import org.json.JSONObject;
 
 /**
  *
@@ -57,15 +59,14 @@ public class Communication {
      * @throws Exception 
      */
     public static void postHtml (String urlToPost,JSONObject data) throws Exception{
-        
-        // Création de l'objet connexion
         try{
-            String send = data.toString();
+            System.out.println(data);
             URL url = new URL(urlToPost);
             URLConnection conn = url.openConnection();
+            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             conn.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(send);
+            wr.write(data.toString());
             wr.flush();
             wr.close();
 

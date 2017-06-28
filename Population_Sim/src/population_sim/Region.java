@@ -18,6 +18,7 @@ public class Region {
     private ArrayList <Player> listPlayer = new ArrayList();
     private ArrayList <Population> listPop = new ArrayList();
     private String metrology;
+    private int timestamp;
     
     /**
      * Constructeur par defaut de la classe Region
@@ -89,5 +90,19 @@ public class Region {
      */
     public void setMetrology(String metrology) {
         this.metrology = metrology;
+    }
+
+    /**
+     * @return the timestamp
+     */
+    public int getTimestamp() {
+        return timestamp;
+    }
+
+    /**
+     * @param timestamp the timestamp to set
+     */
+    public void setTimestamp(int timestamp) {
+        this.timestamp = timestamp;
     }
 }
