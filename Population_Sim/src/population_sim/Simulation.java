@@ -26,11 +26,11 @@ public class Simulation {
     
     public void createAndPlaceBot(int nbBot){
         /* Creation de la population*/
-        InterfaceG.region.getListPop().clear();
+        InterfaceG.getRegion().getListPop().clear();
         for(int i = 0 ; i < nbBot ; i++){
-            float x = (float) (0.0 + (Math.random() * (InterfaceG.region.getSpan().getLongitude() - 0.0))); // (min + (Math.random() * (10.0 - 5.0)) 
-            float y = (float) (0.0 + (Math.random() * (InterfaceG.region.getSpan().getLatitude() - 0.0)));
-            InterfaceG.region.getListPop().add(new Population(new Coordinate(x,y)));
+            float x = (float) (0.0 + (Math.random() * (InterfaceG.getRegion().getSpan().getLongitude() - 0.0))); // (min + (Math.random() * (10.0 - 5.0)) 
+            float y = (float) (0.0 + (Math.random() * (InterfaceG.getRegion().getSpan().getLatitude() - 0.0)));
+            InterfaceG.getRegion().getListPop().add(new Population(new Coordinate(x,y)));
         }
     }
 
@@ -44,9 +44,9 @@ public class Simulation {
     }
     
     @SuppressWarnings("empty-statement")
-    public void simulate_game() throws Exception{
-        ArrayList <Player> player = InterfaceG.region.getListPlayer();
-        ArrayList <Population> pop = InterfaceG.region.getListPop();
+    public void simulate_game(String urlToSendPost) throws Exception{
+        ArrayList <Player> player = InterfaceG.getRegion().getListPlayer();
+        ArrayList <Population> pop = InterfaceG.getRegion().getListPop();
         HashMap <Player, Integer> dispatchBot = new HashMap();
         
         for(int i = 0 ; i < pop.size() ; i++){
@@ -74,7 +74,7 @@ public class Simulation {
             System.out.println("name : " + key.getName() + " nb bot : " + dispatchBot.get(key));
         }
         
-        Double prob = (Double) getProbMap().get(InterfaceG.region.getMetrology());
+        Double prob = (Double) getProbMap().get(InterfaceG.getRegion().getMetrology());
         //System.out.println("prob :" + prob );
         HashMap <Player, Integer> venteTheorique = new HashMap();
         for (Map.Entry<Player,Integer> entry : dispatchBot.entrySet()){
@@ -84,6 +84,7 @@ public class Simulation {
             int nbBotAtStand = dispatchBot.get(key);
             for (int j = 0 ; j < nbBotAtStand ; j++){
                 float achete = (float) Math.random();
+                System.out.println("proba : " + prob + " rand : " + achete);
                 if(achete < prob){
                     if(venteTheorique.containsKey(key)){
                         venteTheorique.replace(key, venteTheorique.get(key)+1);
@@ -120,7 +121,7 @@ public class Simulation {
         }
         JSONObject jsonTosend = new JSONObject();
         jsonToSend.put("sales",arraySales);
-        postHtml("http://fast-wave-77815.herokuapp.com/sales",jsonToSend);
+        postHtml(urlToSendPost,jsonToSend);
     }
     
     /**

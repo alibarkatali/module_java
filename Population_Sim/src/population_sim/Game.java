@@ -21,8 +21,8 @@ public class Game {
      */
     public static void getMapParser (String json_serial){
         ArrayList name_player = new ArrayList();
-        InterfaceG.region.getListPlayer().clear();
-        InterfaceG.region.getListPop().clear();
+        InterfaceG.getRegion().getListPlayer().clear();
+        InterfaceG.getRegion().getListPop().clear();
         try{
             JSONObject obj = new JSONObject(json_serial);
             //Recuperation de chaque "type" principaux (region,ranking,itemsbyPlayers,playerInfo,drinksByPlayer)
@@ -36,7 +36,7 @@ public class Game {
                 name_player.add(json_ranking.getString(i));
                 
                 Player player = new Player();
-                InterfaceG.region.getListPlayer().add(player);
+                InterfaceG.getRegion().getListPlayer().add(player);
                 
                 //playerInfo
                 String name = name_player.get(i).toString();
@@ -74,7 +74,7 @@ public class Game {
                    float longitude = (float) itemsByPlayerArray.getJSONObject(j).getJSONObject("location").getDouble("longitude");
                    Coordinate location = new Coordinate(longitude,latitude);
                    Item newItem = new Item(kind, name, location, influence);
-                   InterfaceG.region.getListPlayer().get(i).getListItem().add(newItem);
+                   InterfaceG.getRegion().getListPlayer().get(i).getListItem().add(newItem);
                 }
                 
                 //drinksByPlayer
@@ -85,7 +85,7 @@ public class Game {
                     boolean hasAlcohol = drinksByPlayerArray.getJSONObject(j).getBoolean("hasAlcohol");
                     boolean isCold = drinksByPlayerArray.getJSONObject(j).getBoolean("isCold");
                     Drink drinksByPlayer = new Drink(nameDrink,price,hasAlcohol,isCold);
-                    InterfaceG.region.getListPlayer().get(i).getDrink().add(drinksByPlayer);
+                    InterfaceG.getRegion().getListPlayer().get(i).getDrink().add(drinksByPlayer);
                 }
             }
             
@@ -95,8 +95,8 @@ public class Game {
             float latitudeSpan = (float) json_region.getJSONObject("span").getDouble("latitudeSpan");
             float longitudeSpan = (float) json_region.getJSONObject("span").getDouble("longitudeSpan");
             
-            InterfaceG.region.setCenter(new Coordinate(longitude,latitude));
-            InterfaceG.region.setSpan(new Coordinate(longitudeSpan,latitudeSpan));
+            InterfaceG.getRegion().setCenter(new Coordinate(longitude,latitude));
+            InterfaceG.getRegion().setSpan(new Coordinate(longitudeSpan,latitudeSpan));
                     
         }   catch( Exception ex){
             ex.printStackTrace();
@@ -114,10 +114,10 @@ public class Game {
         JSONArray json_weather_array = obj.getJSONArray("weather");
         int json_timestamp = obj.getInt("timestamp");
         System.out.println("timestamps : " + json_timestamp);
-        InterfaceG.region.setTimestamp(json_timestamp);
+        InterfaceG.getRegion().setTimestamp(json_timestamp);
         for (int i = 0 ; i < json_weather_array.length() ; i++){
             if (json_weather_array.getJSONObject(i).getInt("dfn") == 0){
-                InterfaceG.region.setMetrology(json_weather_array.getJSONObject(i).get("weather").toString());
+                InterfaceG.getRegion().setMetrology(json_weather_array.getJSONObject(i).get("weather").toString());
             }
         }        
         //System.out.println("metrology : " + region.getMetrology());

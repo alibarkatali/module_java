@@ -5,6 +5,8 @@
  */
 package population_sim;
 
+import static javafx.application.Application.launch;
+
 /**
  *
  * @author matthieu
@@ -24,20 +26,9 @@ public class Population_Sim {
         */
         
         
-        /**
-         * Test pour la communication Get et Post
-         */
-        
-        /*String result = getHtml(urlToReadMetrology);
-        getMetrologyParser(result,region);
-        
-        String result2 = getHtml(urlToReadMap);
-        getMapParser(result2,region);
-        
-        postHtml(urlToPostSales,jsonPostSales("mat","the",10));
-        System.out.println(region.getListPlayer().get(0).getListItem().get(0).getKind());
-        Simulation simu = new Simulation();
-        simu.createAndPlaceBot(10);
-        simu.simulate_game();*/
+        /*ThreadIG thread = new ThreadIG();
+        thread.start();
+        Thread.sleep(1000);
+        launch(args);*/
     }
 }

@@ -31,18 +31,26 @@ public class ThreadIG extends Thread {
         while(true){
             try {
                 getMetrologyParser(getHtml(urlToReadMetrology));
+                System.out.println("metrology : " + InterfaceG.region.getMetrology() );
+                int hourDisplay = InterfaceG.region.getTimestamp() % 24;
+                String displayHour = Integer.toString(hourDisplay);
+                InterfaceG.hour.accessibleTextProperty().set(displayHour);
+                InterfaceG.metrology.accessibleTextProperty().set(InterfaceG.region.getMetrology());
             } catch (Exception ex) {
                 Logger.getLogger(ThreadIG.class.getName()).log(Level.SEVERE, null, ex);
             } 
-            if(InterfaceG.region.getTimestamp()%24 == 23){
+            if(InterfaceG.getRegion().getTimestamp()%24 == 23){
                 try {
+                    System.out.println("---23h lancement simulation---");
                     simu.createAndPlaceBot(100);
-                    simu.simulate_game();
+                    simu.simulate_game(urlToPostSales);
+                    Thread.sleep(12500);
                 } catch (Exception ex) {
                     Logger.getLogger(ThreadIG.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }else if (InterfaceG.region.getTimestamp()%24 == 0){
+            }else if (InterfaceG.getRegion().getTimestamp()%24 < 23){
                 try {
+                    System.out.println("---Get Map---");
                     getMapParser(getHtml(urlToReadMap));
                 } catch (Exception ex) {
                     Logger.getLogger(ThreadIG.class.getName()).log(Level.SEVERE, null, ex);

@@ -9,11 +9,12 @@ import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
- import javafx.scene.control.Label;
+import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import jdk.nashorn.internal.objects.NativeDate;
@@ -23,102 +24,84 @@ import jdk.nashorn.internal.objects.NativeDate;
  * @author matthieu
  */
 public class InterfaceG extends Application {
-    public static Region region = new Region();
-    private Label hour;
-    private Label metrology;
+    static Region region = new Region();
+    public static Label hour = new Label();
+    public static Label metrology = new Label();
+    private static Label cash = new Label();
+    private static Label profit = new Label();
+    private static Label sales = new Label();
+    private static int cartX = 800;
+    private static int cartY = 700;
     @Override
     public void start(Stage primaryStage) {
-        GridPane gridPane = new GridPane();
-        ColumnConstraints column1 = new ColumnConstraints();
-        ColumnConstraints column2 = new ColumnConstraints();
-        ColumnConstraints column3 = new ColumnConstraints();
-        ColumnConstraints column4 = new ColumnConstraints();
-        column1.setPercentWidth(25);
-        column2.setPercentWidth(25);
-        column3.setPercentWidth(25);
-        column4.setPercentWidth(25);
-        gridPane.setVisible(true);
-        gridPane.getColumnConstraints().addAll(column1,column2,column3,column4);
+        GridPane gridPaneInfoGame = new GridPane();
+        GridPane gridPaneInfoPlayer = new GridPane();
+        
+        ColumnConstraints colConstInfoGame = new ColumnConstraints(getCartX()/4);
+        ColumnConstraints colConstrInfoGame2 = new ColumnConstraints(getCartX()/4);
+        gridPaneInfoGame.getColumnConstraints().addAll(colConstInfoGame,colConstrInfoGame2);
+        //gridPaneInfoGame.getRowConstraints().add(rowConstInfoGame);
+        
+        RowConstraints rowConstInfoPlayer = new RowConstraints(getCartY()/8);
+        RowConstraints rowConstInfoPlayer2 = new RowConstraints(7*getCartY()/8);
+        gridPaneInfoPlayer.getRowConstraints().addAll(rowConstInfoPlayer,rowConstInfoPlayer2);
+        ColumnConstraints colConstInfoPlayer = new ColumnConstraints(getCartX());
+        gridPaneInfoPlayer.getColumnConstraints().add(colConstInfoPlayer);
+        
         Label metrologyLabel = new Label ("Metrology : ");
         Label hourLabel = new Label ("Hours :");
-        setMetrology(new Label());
-        setHour(new Label());
-        gridPane.add(metrologyLabel, 0, 0);
-        gridPane.add(getMetrology(),1,0);
-        gridPane.add(hourLabel,2,0);
-        gridPane.add(getHour(),3,0);
+        gridPaneInfoGame.setConstraints(metrologyLabel,0,0);
+        gridPaneInfoGame.setConstraints(metrology,1,0);
+        gridPaneInfoGame.setConstraints(hourLabel,0,1);
+        gridPaneInfoGame.setConstraints(hour,1,1);
         
-        GridPane gridPane2 = new GridPane();
-        ColumnConstraints column5 = new ColumnConstraints();
-        ColumnConstraints column6 = new ColumnConstraints();
-        column5.setPercentWidth(75);
-        column6.setPercentWidth(25);
-        gridPane2.getColumnConstraints().addAll(column5,column6);
-        gridPane2.setVisible(true);
+        Label cashLabel = new Label ("cash : ");
+        Label profitLabel = new Label ("profit: ");
+        Label salesLabel = new Label("sales : ");
+        gridPaneInfoPlayer.setConstraints(cashLabel,0,2);
+        gridPaneInfoPlayer.setConstraints(cash,1,2);
         
-        /*
-        TreeItem <String> playerList = new TreeItem <String> ("Player");
-        for(int i = 0 ; i < region.getListPlayer().size() ; i++){
-            TreeItem <String> playerInfo = new TreeItem <String> (region.getListPlayer().get(i).getName());
-            playerList.setExpanded(true);
-            TreeItem <String> playerPos = new TreeItem <String> ("position");
-            playerPos.getChildren().addAll(
-                new TreeItem <String> ("longitude : " + region.getListPlayer().get(i).getListItem().get(0).getLocation().getLongitude()),
-                new TreeItem <String> ("latitude : " + region.getListPlayer().get(i).getListItem().get(0).getLocation().getLatitude())
-            );
-            TreeItem <String> adPos = new TreeItem <String> ("ad");
-            int nbAd = region.getListPlayer().get(i).getListItem().size() ;
-            for(int j = 0 ; j < nbAd ; j++){
-                if(region.getListPlayer().get(i).getListItem().get(j).getKind() == Kind_Items.AD){
-                    TreeItem <String> pub = new TreeItem <String> ("pub " + j);
-                    pub.getChildren().addAll(
-                            new TreeItem <String> ("longitude"),
-                            new TreeItem <String> ("latitude")
-                    );
-                    adPos.getChildren().addAll(pub);
-                }
-            }
-            playerInfo.getChildren().addAll(
-                    new TreeItem <String> ("budget : " + region.getListPlayer().get(i).getCash()),
-                    new TreeItem <String> ("sales : " + region.getListPlayer().get(i).getSales()),
-                    new TreeItem <String> ("profit : " + region.getListPlayer().get(i).getProfit())
-            );
-            TreeItem <String> drinkInfo = new TreeItem < String> ("Drink Info");
-            drinkInfo.getChildren().addAll(
-                new TreeItem <String> ("nom : "),
-                new TreeItem <String> ("prix : "),
-                new TreeItem <String> ("alcohol : "),
-                new TreeItem <String> ("froid : ")
-            );
-            playerInfo.getChildren().addAll(playerPos);
-            playerInfo.getChildren().addAll(adPos);
-            playerInfo.getChildren().addAll(drinkInfo);
-            playerList.getChildren().addAll(playerInfo);
-        }
-        TreeView <String> tree = new TreeView <String> (playerList);
-        tree.setVisible(true);
-        gridPane2.add(tree,1,2);
-        */
+        gridPaneInfoGame.getChildren().addAll(metrologyLabel,metrology,hourLabel,hour);
+        gridPaneInfoPlayer.getChildren().addAll(cashLabel, getCash());
         
         ComboBox <String> cmb = new ComboBox<String>();
-        System.out.println("size : " + InterfaceG.region.getListPlayer().size());
+        //cmb.getItems().add("coucou");
+        //cmb.getItems().add("test");
         
-        cmb.setVisible(true);
-        gridPane2.add(cmb, 1, 2);
+        
+        System.out.println("size : " + InterfaceG.region.getListPlayer().size());
+        for (int i = 0 ; i < InterfaceG.region.getListPlayer().size() ; i ++){
+            cmb.getItems().add(InterfaceG.region.getListPlayer().get(i).getName().toString());
+        }/**/
+        
+        cmb.setOnAction((event)->{
+            System.out.println(cmb.getValue());
+        });
+        
+        gridPaneInfoPlayer.setConstraints(cmb, 1, 0);
+        gridPaneInfoPlayer.getChildren().addAll(cmb);
+        
+        
+        //cmb.setVisible(true);
+        
+        //gridPaneInfoGame.setGridLinesVisible(true);
+        gridPaneInfoPlayer.setGridLinesVisible(true);
         
         StackPane root = new StackPane();
-        root.getChildren().add(gridPane);
-        root.getChildren().add(gridPane2);
+        root.getChildren().add(gridPaneInfoGame);
+        root.getChildren().add(gridPaneInfoPlayer);
         
-        Scene scene = new Scene(root, 600, 600);
+        Scene scene = new Scene(root, getCartX(), getCartY());
         
         primaryStage.setTitle("Lemonade :: Face / Off");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
     
-    public void changeHour(String hour){
-        getHour().setText(hour);
+    public void changeHour(int hour){
+        int hourDisplay = hour % 24;
+        String display = Integer.toString(hourDisplay);
+        getHour().setText(display);
     }
     
     public void changeMetrology (String metrology){
@@ -161,5 +144,89 @@ public class InterfaceG extends Application {
      */
     public void setMetrology(Label metrology) {
         this.metrology = metrology;
+    }
+
+    /**
+     * @return the region
+     */
+    public static Region getRegion() {
+        return region;
+    }
+
+    /**
+     * @param aRegion the region to set
+     */
+    public static void setRegion(Region aRegion) {
+        region = aRegion;
+    }
+    
+    /**
+     * @return the cash
+     */
+    public static Label getCash() {
+        return cash;
+    }
+
+    /**
+     * @param aCash the cash to set
+     */
+    public static void setCash(Label aCash) {
+        cash = aCash;
+    }
+
+    /**
+     * @return the profit
+     */
+    public static Label getProfit() {
+        return profit;
+    }
+
+    /**
+     * @param aProfit the profit to set
+     */
+    public static void setProfit(Label aProfit) {
+        profit = aProfit;
+    }
+
+    /**
+     * @return the sales
+     */
+    public static Label getSales() {
+        return sales;
+    }
+
+    /**
+     * @param aSales the sales to set
+     */
+    public static void setSales(Label aSales) {
+        sales = aSales;
+    }
+
+    /**
+     * @return the cartX
+     */
+    public static int getCartX() {
+        return cartX;
+    }
+
+    /**
+     * @param aCartX the cartX to set
+     */
+    public static void setCartX(int aCartX) {
+        cartX = aCartX;
+    }
+
+    /**
+     * @return the cartY
+     */
+    public static int getCartY() {
+        return cartY;
+    }
+
+    /**
+     * @param aCartY the cartY to set
+     */
+    public static void setCartY(int aCartY) {
+        cartY = aCartY;
     }
 }
