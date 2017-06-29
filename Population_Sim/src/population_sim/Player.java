@@ -17,26 +17,51 @@ public class Player {
      * nom du joueur
      */
     private String name;
+    /**
+     * budget
+     */
     private float cash;
+    /**
+     * profit au fil du temps
+     */
     private float profit;
+    /**
+     * nombre de vente depuis le debut du jeu
+     */
     private int sales;
+    /**
+     * liste de boisson que le joueur vend aujourd'hui
+     */
     private ArrayList <Drink> drinkOffered = new ArrayList();
+    /**
+     * liste de boisson que le joueur peut vendre
+     */
     private ArrayList <Drink> drink = new ArrayList();
+    /**
+     * liste de stand et des pub du joueur
+     */
     private ArrayList <Item> listItem = new ArrayList();
     /**
      * Constructeur par defaut de la classe Player
      * @param name
      *          Nom du joueur
-     * @param location 
-     *          Position du joueur
+     * @param cash
+     *          Budget du joueur
+     * @param profit
+     *          profit du joueur
+     * @param sales
+     *          Vente du joueur
      */
-    public Player (String name,float cash,float profit,int sales,Drink drinkOffered){
+    public Player (String name,float cash,float profit,int sales){
         this.name = name;
         this.cash = cash;
         this.profit = profit;
         this.sales = sales;
     }
     
+    /**
+     * Constructeur par defaut
+     */
     public Player (){
         
     }

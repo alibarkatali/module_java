@@ -5,19 +5,20 @@
  */
 package population_sim;
 
-import java.util.ArrayList;
+import java.awt.Canvas;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.scene.Scene;
+import javafx.application.Platform;
+import javafx.scene.*;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import jdk.nashorn.internal.objects.NativeDate;
 
 /**
  *
@@ -25,13 +26,17 @@ import jdk.nashorn.internal.objects.NativeDate;
  */
 public class InterfaceG extends Application {
     static Region region = new Region();
+    private static int cartX = 800;
+    private static int cartY = 700;
     public static Label hour = new Label();
     public static Label metrology = new Label();
     private static Label cash = new Label();
     private static Label profit = new Label();
     private static Label sales = new Label();
-    private static int cartX = 800;
-    private static int cartY = 700;
+    private static Label ranking = new Label();
+    private static ComboBox <String> cmb = new ComboBox <String>();
+    private static Canvas canvas = new Canvas();
+
     @Override
     public void start(Stage primaryStage) {
         GridPane gridPaneInfoGame = new GridPane();
@@ -58,35 +63,30 @@ public class InterfaceG extends Application {
         Label cashLabel = new Label ("cash : ");
         Label profitLabel = new Label ("profit: ");
         Label salesLabel = new Label("sales : ");
-        gridPaneInfoPlayer.setConstraints(cashLabel,0,2);
-        gridPaneInfoPlayer.setConstraints(cash,1,2);
+        Label rankingLabel = new Label("ranking : ");
+        gridPaneInfoPlayer.setConstraints(rankingLabel, 1, 2);
+        gridPaneInfoPlayer.setConstraints(ranking,2,2);
+        gridPaneInfoPlayer.setConstraints(cashLabel,1,3);
+        gridPaneInfoPlayer.setConstraints(cash,2,3);
+        gridPaneInfoPlayer.setConstraints(profitLabel,1,4);
+        gridPaneInfoPlayer.setConstraints(profit,2,4);
+        gridPaneInfoPlayer.setConstraints(salesLabel,1,5);
+        gridPaneInfoPlayer.setConstraints(sales,2,5);
+        
+        
         
         gridPaneInfoGame.getChildren().addAll(metrologyLabel,metrology,hourLabel,hour);
-        gridPaneInfoPlayer.getChildren().addAll(cashLabel, getCash());
-        
-        ComboBox <String> cmb = new ComboBox<String>();
-        //cmb.getItems().add("coucou");
-        //cmb.getItems().add("test");
-        
+        gridPaneInfoPlayer.getChildren().addAll(rankingLabel,ranking,cashLabel,cash,profitLabel,profit,salesLabel,sales);
         
         System.out.println("size : " + InterfaceG.region.getListPlayer().size());
         for (int i = 0 ; i < InterfaceG.region.getListPlayer().size() ; i ++){
             cmb.getItems().add(InterfaceG.region.getListPlayer().get(i).getName().toString());
-        }/**/
-        
-        cmb.setOnAction((event)->{
-            System.out.println(cmb.getValue());
-        });
+        }
         
         gridPaneInfoPlayer.setConstraints(cmb, 1, 0);
-        gridPaneInfoPlayer.getChildren().addAll(cmb);
+        gridPaneInfoPlayer.getChildren().add(cmb);
         
-        
-        //cmb.setVisible(true);
-        
-        //gridPaneInfoGame.setGridLinesVisible(true);
-        gridPaneInfoPlayer.setGridLinesVisible(true);
-        
+                
         StackPane root = new StackPane();
         root.getChildren().add(gridPaneInfoGame);
         root.getChildren().add(gridPaneInfoPlayer);
@@ -95,33 +95,37 @@ public class InterfaceG extends Application {
         
         primaryStage.setTitle("Lemonade :: Face / Off");
         primaryStage.setScene(scene);
+        
+        ThreadIG threadIg = new ThreadIG();
+        threadIg.start();
+            
         primaryStage.show();
     }
     
-    public void changeHour(int hour){
+    public static void changeHour(int hour){
         int hourDisplay = hour % 24;
         String display = Integer.toString(hourDisplay);
-        getHour().setText(display);
+        InterfaceG.hour.setText(Integer.toString(hourDisplay));
     }
     
-    public void changeMetrology (String metrology){
-        getMetrology().setText(metrology);
+    public static void changeMetrology (String metrology){
+        InterfaceG.metrology.setText(metrology);
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException {
-        ThreadIG thread = new ThreadIG();
+        ThreadSimu thread = new ThreadSimu();
         thread.start();
-        Thread.sleep(5000);
+        Thread.sleep(125000);
         launch(args);
     }  
 
     /**
      * @return the hour
      */
-    public Label getHour() {
+    public static Label getHour() {
         return hour;
     }
 
@@ -135,7 +139,7 @@ public class InterfaceG extends Application {
     /**
      * @return the metrology
      */
-    public Label getMetrology() {
+    public static Label getMetrology() {
         return metrology;
     }
 
@@ -228,5 +232,36 @@ public class InterfaceG extends Application {
      */
     public static void setCartY(int aCartY) {
         cartY = aCartY;
+    }
+    
+    private class ThreadIG extends Thread{
+        ThreadIG(){
+            
+        }
+        
+        public void run(){
+            while(true){
+                Platform.runLater(()->{
+                    InterfaceG.metrology.setText(InterfaceG.region.getMetrology());
+                    int hourDisplay = InterfaceG.region.getTimestamp() % 24;
+                    String display = Integer.toString(hourDisplay);
+                    InterfaceG.hour.setText(display+"h");
+                    
+                    for (int i = 0 ; i<InterfaceG.region.getListPlayer().size() ; i++){
+                        if(InterfaceG.region.getListPlayer().get(i).getName().equals(InterfaceG.cmb.getValue())){
+                            cash.setText(Integer.toString((int) InterfaceG.region.getListPlayer().get(i).getCash()));
+                            profit.setText(Integer.toString((int) InterfaceG.region.getListPlayer().get(i).getProfit()));
+                            sales.setText(Integer.toString(InterfaceG.region.getListPlayer().get(i).getSales()));
+                            ranking.setText(Integer.toString(i+1));
+                        }
+                    }
+                });
+                try {
+                Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(InterfaceG.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
     }
 }

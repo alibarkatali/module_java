@@ -15,9 +15,6 @@ public class Game {
      * Parse le string serialisé en json pour recuperer plusieurs informations.
      * @param json_serial
      *          Le string représentant le json
-     * @param region
-     * 
-     * @return 
      */
     public static void getMapParser (String json_serial){
         ArrayList name_player = new ArrayList();
@@ -105,9 +102,8 @@ public class Game {
     
     /**
      * Parse le string serialisé en json pour recuperer l'info sur la meteo
-     * @param json_serial
-     * @return metrology
-     *          Le string correspondant a la meteo du jour          
+     * @param json_serial    
+     *          String au format JSON
      */
     public static void getMetrologyParser (String json_serial){
         JSONObject obj = new JSONObject (json_serial);
@@ -120,7 +116,6 @@ public class Game {
                 InterfaceG.getRegion().setMetrology(json_weather_array.getJSONObject(i).get("weather").toString());
             }
         }        
-        //System.out.println("metrology : " + region.getMetrology());
     }    
 }
 

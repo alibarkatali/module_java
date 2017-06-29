@@ -10,11 +10,30 @@ package population_sim;
  * @author matthieu
  */
 public class Drink {
+    /**
+     * nom de la boisson
+     */
     private String name;
+    /**
+     * prix de la boisson
+     */
     private float price;
+    /**
+     * contient de l'alcool
+     */
     private Boolean hasAlcohol;
+    /**
+     * boisson froide
+     */
     private Boolean isCold;
     
+    /**
+     * Constructeur de la classe boisson
+     * @param name
+     * @param price
+     * @param hasAlcohol
+     * @param isCold 
+     */
     public Drink(String name, float price, Boolean hasAlcohol, Boolean isCold){
         this.name = name;
         this.price = price;

@@ -13,6 +13,9 @@ import static population_sim.Communication.postHtml;
  * @author matthieu
  */
 public class Simulation {
+    /**
+     * probabilité 
+     */
     private HashMap <String,Double> probMap;
     
     public Simulation(){
@@ -24,6 +27,11 @@ public class Simulation {
         probMap.put("heatwave",1.0);
     }
     
+    /**
+     * Fonction de création des bots
+     * @param nbBot 
+     *          nombre de bot a créer
+     */
     public void createAndPlaceBot(int nbBot){
         /* Creation de la population*/
         InterfaceG.getRegion().getListPop().clear();
@@ -34,8 +42,15 @@ public class Simulation {
         }
     }
 
-    
-    
+    /**
+     * Fonction qui calcule la distance entre deux points
+     * @param stand
+     *          Coordonnée du stand du joueur
+     * @param bot
+     *          Coordonnée du bot
+     * @return distance
+     *          Distance entre les deux points
+     */
     public float checkDistanceBetweenStandAndBot(Item stand, Population bot){
         float deltaLong =(float) Math.pow((stand.getLocation().getLongitude()+bot.getLocation().getLongitude()),2); //changer par la fonction ²
         float deltaLat = (float) Math.pow((stand.getLocation().getLatitude()+bot.getLocation().getLatitude()),2);
@@ -43,6 +58,13 @@ public class Simulation {
         return distance;
     }
     
+    /**
+     * Fais la simulation du jeu
+     * Envoi la requete POST sales
+     * @param urlToSendPost
+     *          Url pour la requete POST
+     * @throws Exception 
+     */
     @SuppressWarnings("empty-statement")
     public void simulate_game(String urlToSendPost) throws Exception{
         ArrayList <Player> player = InterfaceG.getRegion().getListPlayer();
